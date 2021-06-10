@@ -1,0 +1,26 @@
+name: mongolian_editor
+description: A vertical script Mongolian editor
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mongol: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: menksoft
+      fonts:
+        - asset: assets/fonts/MQG8F02.ttf
+    - family: delehi
+      fonts:
+        - asset: assets/fonts/mnglbaizhengotf.ttf
