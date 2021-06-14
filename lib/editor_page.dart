@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditorPage extends StatefulWidget {
   @override
@@ -10,6 +13,41 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage> {
   final textController = TextEditingController();
   var fontFamily = 'menksoft';
+  StreamSubscription? _autoSaveSubscription;
+  var _previousText = '';
+  static const _autoSaveKey = 'text';
+
+  @override
+  void initState() {
+    super.initState();
+    _getSavedText();
+    _autoSaveSubscription =
+        Stream.periodic(Duration(minutes: 1)).listen((event) {
+      _autoSave();
+    });
+  }
+
+  void _getSavedText() async {
+    final prefs = await SharedPreferences.getInstance();
+    final text = prefs.getString(_autoSaveKey);
+    if (text == null) return;
+    textController.text = text;
+    _previousText = text;
+  }
+
+  void _autoSave() async {
+    final text = textController.text;
+    if (text == _previousText) return;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_autoSaveKey, text);
+    _previousText = text;
+  }
+
+  @override
+  void dispose() {
+    _autoSaveSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +57,7 @@ class _EditorPageState extends State<EditorPage> {
         children: <Widget>[
           SizedBox(height: 20),
           Text(
-            'Editor',
+            'Mongolian Editor',
             style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 20),
@@ -34,6 +72,7 @@ class _EditorPageState extends State<EditorPage> {
                 fontFamily: fontFamily,
                 fontSize: 20,
               ),
+              autofocus: true,
             ),
           ),
           SizedBox(height: 20),
@@ -50,7 +89,7 @@ class _EditorPageState extends State<EditorPage> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   setState(() {
                     fontFamily = 'menksoft';
                   });
@@ -59,7 +98,7 @@ class _EditorPageState extends State<EditorPage> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   setState(() {
                     fontFamily = 'delehi';
                   });

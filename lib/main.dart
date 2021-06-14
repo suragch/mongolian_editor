@@ -10,8 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Mongol Code',
+      title: 'Mongolian Editor',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
